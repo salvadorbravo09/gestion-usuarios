@@ -33,5 +33,9 @@
     "lint-staged": {
         "*.js": "eslint --fix",
         "*.{js,md}": "prettier --write"
+    },
+    "dependencies": {
+        "express": "^4.21.2",
+        "mongoose": "^8.10.1"
     }
 }
