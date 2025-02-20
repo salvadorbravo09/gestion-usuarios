@@ -1,8 +1,8 @@
 {
-    "name": "node-template",
+    "name": "gestion-usuarios",
     "version": "1.0.0",
     "type": "module",
-    "description": "Plantilla base para los proyectos desarrollados en el curso de Node.JS de la plataforma LearnThis Academy",
+    "description": "Aplicacion para la gestion de usuarios",
     "scripts": {
         "dev": "nodemon src/index.js",
         "start": "node src/index.js",
@@ -12,8 +12,7 @@
         "postinstall": "npm run prepare"
     },
     "author": {
-        "name": "LearnThis Academy",
-        "url": "https://learnthisacademy.com"
+        "name": "Salvador Bravo"
     },
     "license": "MIT",
     "devDependencies": {

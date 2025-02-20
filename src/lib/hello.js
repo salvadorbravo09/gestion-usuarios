@@ -1,1 +1,3 @@
-export const printHello = () => console.log('Hello world');
+export const hello = () => {
+  console.log("Hola Mundo")
+}
