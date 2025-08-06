@@ -1,6 +1,7 @@
 package com.sbravoc.gestion_usuarios.adapter.rest;
 
 import com.sbravoc.gestion_usuarios.adapter.rest.dto.CreateUserRequestDto;
+import com.sbravoc.gestion_usuarios.adapter.rest.dto.UpdateUserRequestDto;
 import com.sbravoc.gestion_usuarios.adapter.rest.dto.UserResponseDto;
 import com.sbravoc.gestion_usuarios.adapter.rest.mapper.UserMapper;
 import com.sbravoc.gestion_usuarios.domain.user.model.User;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
@@ -33,12 +34,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
-        Optional<User> userOptional = this.userService.getUserById(id);
-        if (userOptional.isPresent()) {
-            UserResponseDto userDto = this.userMapper.toDto(userOptional.get());
+        try {
+            User user = this.userService.getUserById(id);
+            UserResponseDto userDto = this.userMapper.toDto(user);
             return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping
@@ -47,5 +49,27 @@ public class UserController {
         User createdUser = this.userService.createUser(user);
         UserResponseDto userResponseDto = this.userMapper.toDto(createdUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequestDto updateUserRequestDto) {
+        try {
+            User userToUpdate = this.userMapper.toEntityFromUpdateRequest(updateUserRequestDto);
+            User updatedUser = this.userService.updateUser(id, userToUpdate);
+            UserResponseDto userResponseDto = this.userMapper.toDto(updatedUser);
+            return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        try {
+            this.userService.deleteUserById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }
