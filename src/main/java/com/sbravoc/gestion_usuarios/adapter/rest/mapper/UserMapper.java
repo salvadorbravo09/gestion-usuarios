@@ -1,5 +1,6 @@
 package com.sbravoc.gestion_usuarios.adapter.rest.mapper;
 
+import com.sbravoc.gestion_usuarios.adapter.rest.dto.CreateUserRequestDto;
 import com.sbravoc.gestion_usuarios.adapter.rest.dto.UserResponseDto;
 import com.sbravoc.gestion_usuarios.domain.user.model.User;
 import org.springframework.stereotype.Component;
@@ -33,8 +34,21 @@ public class UserMapper {
                 .collect(Collectors.toList());
     }
 
-    // Convertir UserResponseDto a una entidad User
-    public User toEntity(UserResponseDto dto) {
+    // Convertir CreateUserRequestDto a entidad User
+    public User toEntityFromCreateRequest(CreateUserRequestDto dto) {
+        if (dto == null) return null;
+
+        User user = new User();
+        user.setName(dto.getName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
+        user.setPassword(dto.getPassword());
+        return user;
+    }
+
+    // Convertir UserResponseDto a una entidad User (para actualizaciones)
+    public User toEntityFromResponse(UserResponseDto dto) {
         if (dto == null) return null;
 
         User user = new User();
