@@ -26,8 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<User> getUserById(Long id) {
-        return this.userRepository.findById(id);
+    public User getUserById(Long id) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("Usuario con id " + id + " no existe.");
+        }
+        return userOptional.get();
     }
 
     @Override
@@ -38,7 +42,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public User updateUser(Long id, User user) {
+        Optional<User> existingUser = this.userRepository.findById(id);
+        if (!existingUser.isPresent()) {
+            throw new IllegalArgumentException("Usuario con id " + id + " no existe.");
+        }
+        user.setId(id);
+        return this.userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
     public void deleteUserById(Long id) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("Usuario con id " + id + " no existe.");
+        }
         this.userRepository.deleteById(id);
     }
 }
