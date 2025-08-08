@@ -3,6 +3,8 @@ package com.sbravoc.gestion_usuarios.application.user.service;
 import com.sbravoc.gestion_usuarios.domain.user.model.User;
 import com.sbravoc.gestion_usuarios.domain.user.repository.UserRepository;
 import com.sbravoc.gestion_usuarios.domain.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,12 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return (List<User>) this.userRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<User> findAllUsers(Pageable pageable) {
+        return this.userRepository.findAll(pageable);
     }
 
     @Override
