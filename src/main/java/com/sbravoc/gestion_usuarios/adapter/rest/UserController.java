@@ -7,6 +7,9 @@ import com.sbravoc.gestion_usuarios.adapter.rest.mapper.UserMapper;
 import com.sbravoc.gestion_usuarios.domain.user.model.User;
 import com.sbravoc.gestion_usuarios.domain.user.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +33,14 @@ public class UserController {
         List<User> users = this.userService.getAllUsers();
         List<UserResponseDto> userDtos = this.userMapper.toDtoList(users);
         return ResponseEntity.status(HttpStatus.OK).body(userDtos);
+    }
+
+    @GetMapping("/page/{page}")
+    public ResponseEntity<Page<UserResponseDto>> getAllUsersPaginated(@PathVariable int page) {
+        Pageable pageable = PageRequest.of(page, 5); // Cada pagina contiene 5 registros
+        Page<User> userPage = this.userService.findAllUsers(pageable);
+        Page<UserResponseDto> userDtoPage = userPage.map(user -> this.userMapper.toDto(user));
+        return ResponseEntity.status(HttpStatus.OK).body(userDtoPage);
     }
 
     @GetMapping("/{id}")
