@@ -1,5 +1,6 @@
 package com.sbravoc.gestion_usuarios.domain.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,4 +47,28 @@ public class User {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    /**
+     * Relación muchos a muchos entre User y Role.
+     *
+     * Esta relación utiliza una tabla intermedia 'user_roles' para gestionar
+     * la asociación entre usuarios y roles. Un usuario puede tener múltiples
+     * roles y un rol puede ser asignado a múltiples usuarios.
+     *
+     * Configuración de la tabla intermedia:
+     * - Nombre de tabla: user_roles
+     * - Columna de unión: user_id (referencia a users.id)
+     * - Columna inversa: role_id (referencia a roles.id)
+     * - Restricción única: Previene duplicación de la misma combinación user_id/role_id
+     *
+     */
+    @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id"})
+    )
+    private List<Role> roles = new ArrayList<>();
 }
